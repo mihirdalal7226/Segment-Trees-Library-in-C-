@@ -45,8 +45,8 @@ private:
 public:
     sumsegtree(int n, vector<T> a)
     {
-        st = vector<T>(2 * n + 5, 0);
-        lazy = vector<T>(2 * n + 5, 0);
+        st = vector<T>(4 * n + 5, 0);
+        lazy = vector<T>(4 * n + 5, 0);
         this->a = a;
         this->n = n;
         build1(1, 1, n, a);
@@ -141,8 +141,8 @@ private:
 public:
     minsegtree(int n, vector<T> a)
     {
-        st = vector<T>(2 * n + 5, 0);
-        lazy = vector<T>(2 * n + 5, 0);
+        st = vector<T>(4 * n + 5, 0);
+        lazy = vector<T>(4 * n + 5, 0);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);
@@ -215,8 +215,8 @@ private:
             st[si] = min(st[si], val);
             if (ss != se)
             {
-                lazy[2 * si] = min(st[2 * si], val);
-                lazy[2 * si + 1] = min(st[2 * si + 1], val);
+                lazy[2 * si] = min(lazy[2 * si], val);
+                lazy[2 * si + 1] = min(lazy[2 * si + 1], val);
             }
             return;
         }
@@ -237,8 +237,8 @@ private:
 public:
     maxsegtree(int n, vector<T> a)
     {
-        st = vector<T>(2 * n + 5, 0);
-        lazy = vector<T>(2 * n + 5, 0);
+        st = vector<T>(4 * n + 5, 0);
+        lazy = vector<T>(4 * n + 5, 0);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);
@@ -268,7 +268,7 @@ private:
     T query1(int si, int ss, int se, int qs, int qe, vector<T> &a)
     {
         if (lazy[si] != 0)
-        {
+        {+
             T dx = lazy[si];
             lazy[si] = 0;
             st[si] = max(st[si], (dx));
@@ -332,8 +332,8 @@ private:
 public:
     gcdsegtree(int n, vector<int> a)
     {
-        st = vector<int>(2 * n + 5, 0);
-        lazy = vector<int>(2 * n + 5, 0);
+        st = vector<int>(4 * n + 5, 0);
+        lazy = vector<int>(4 * n + 5, 0);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);

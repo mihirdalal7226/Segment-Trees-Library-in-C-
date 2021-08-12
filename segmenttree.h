@@ -27,6 +27,7 @@
 #include <ctime>
 using namespace std;
 #define int long long
+const int pinf=2e18;
 int gcd(int a, int b)
 {
     if (b == 0)
@@ -45,8 +46,8 @@ private:
 public:
     sumsegtree(int n, vector<T> a)
     {
-        st = vector<T>(4 * n + 5, 0);
-        lazy = vector<T>(4 * n + 5, 0);
+        st = vector<T>(4 * n + 15, 0);
+        lazy = vector<T>(4 * n + 15, 0);
         this->a = a;
         this->n = n;
         build1(1, 1, n, a);
@@ -63,6 +64,8 @@ public:
 private:
     void build1(int si, int ss, int se, vector<T> &a)
     {
+        if(ss>se)
+            return;
         if (ss == se)
         {
             st[si] = a[ss];
@@ -75,6 +78,8 @@ private:
     }
     T query1(int si, int ss, int se, int qs, int qe, vector<T> &a)
     {
+        if(ss>se)
+            return 0;
         if (lazy[si] != 0)
         {
             T dx = lazy[si];
@@ -99,6 +104,8 @@ private:
     }
     void update1(int si, int ss, int se, int qs, int qe, T val, vector<T> &a)
     {
+        if(ss>se)
+            return;
         if (lazy[si] != 0)
         {
             T dx = lazy[si];
@@ -142,7 +149,7 @@ public:
     minsegtree(int n, vector<T> a)
     {
         st = vector<T>(4 * n + 5, 0);
-        lazy = vector<T>(4 * n + 5, 0);
+        lazy = vector<T>(4 * n + 5, pinf);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);
@@ -159,6 +166,8 @@ public:
 private:
     void build1(int si, int ss, int se, vector<T> &a)
     {
+        if(ss>se)
+            return;
         if (ss == se)
         {
             st[si] = a[ss];
@@ -171,20 +180,22 @@ private:
     }
     T query1(int si, int ss, int se, int qs, int qe, vector<T> &a)
     {
-        if (lazy[si] != 0)
+        if(ss>se)
+            return pinf;
+        if (lazy[si] != pinf)
         {
             T dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = min(st[si], (dx));
+            lazy[si] = pinf;
+            st[si] = min(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = min(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = min(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
         {
-            return INT_MAX;
+            return pinf;
         }
         if (ss >= qs && se <= qe)
         {
@@ -195,15 +206,17 @@ private:
     }
     void update1(int si, int ss, int se, int qs, int qe, T val, vector<T> &a)
     {
-        if (lazy[si] != 0)
+        if(ss>se)
+            return;
+        if (lazy[si] != pinf)
         {
             T dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = min(st[si], (dx));
+            lazy[si] = pinf;
+            st[si] = min(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = min(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = min(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
@@ -215,8 +228,8 @@ private:
             st[si] = min(st[si], val);
             if (ss != se)
             {
-                lazy[2 * si] = min(lazy[2 * si], val);
-                lazy[2 * si + 1] = min(lazy[2 * si + 1], val);
+                lazy[2 * si] = val;
+                lazy[2 * si + 1] = val;
             }
             return;
         }
@@ -238,7 +251,7 @@ public:
     maxsegtree(int n, vector<T> a)
     {
         st = vector<T>(4 * n + 5, 0);
-        lazy = vector<T>(4 * n + 5, 0);
+        lazy = vector<T>(4 * n + 5, -pinf);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);
@@ -255,6 +268,8 @@ public:
 private:
     void build1(int si, int ss, int se, vector<int> &a)
     {
+        if(ss>se)
+            return ;
         if (ss == se)
         {
             st[si] = a[ss];
@@ -267,15 +282,17 @@ private:
     }
     T query1(int si, int ss, int se, int qs, int qe, vector<T> &a)
     {
-        if (lazy[si] != 0)
-        {+
+        if(ss>se)
+            return -pinf;
+        if (lazy[si] != -pinf)
+        {
             T dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = max(st[si], (dx));
+            lazy[si] = -pinf;
+            st[si] = max(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = max(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = max(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
@@ -291,15 +308,17 @@ private:
     }
     void update1(int si, int ss, int se, int qs, int qe, T val, vector<T> &a)
     {
-        if (lazy[si] != 0)
+        if(ss>se)
+            return ;
+        if (lazy[si] != -pinf)
         {
             T dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = max(st[si], (dx));
+            lazy[si] = -pinf;
+            st[si] = max(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = max(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = max(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
@@ -311,8 +330,8 @@ private:
             st[si] = max(st[si], val);
             if (ss != se)
             {
-                lazy[2 * si] = max(st[2 * si], val);
-                lazy[2 * si + 1] = max(st[2 * si + 1], val);
+                lazy[2 * si] = val;
+                lazy[2 * si + 1] = val;
             }
             return;
         }
@@ -332,8 +351,8 @@ private:
 public:
     gcdsegtree(int n, vector<int> a)
     {
-        st = vector<int>(4 * n + 5, 0);
-        lazy = vector<int>(4 * n + 5, 0);
+        st = vector<int>(4 * n + 15, 0);
+        lazy = vector<int>(4 * n + 15, -pinf);
         this->n = n;
         this->a = a;
         build1(1, 1, n, a);
@@ -350,6 +369,8 @@ public:
 private:
     void build1(int si, int ss, int se, vector<int> &a)
     {
+        if(ss>se)
+            return ;
         if (ss == se)
         {
             st[si] = a[ss];
@@ -362,15 +383,17 @@ private:
     }
     int query1(int si, int ss, int se, int qs, int qe, vector<int> &a)
     {
-        if (lazy[si] != 0)
+        if(ss>se)
+            return 0;
+        if (lazy[si] != -pinf)
         {
             int dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = gcd(st[si], (dx));
+            lazy[si] = -pinf;
+            st[si] = gcd(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = gcd(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = gcd(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
@@ -386,15 +409,17 @@ private:
     }
     void update1(int si, int ss, int se, int qs, int qe, int val, vector<int> &a)
     {
-        if (lazy[si] != 0)
+        if(ss>se)
+            return ;
+        if (lazy[si] != -pinf)
         {
             int dx = lazy[si];
-            lazy[si] = 0;
-            st[si] = gcd(st[si], (dx));
+            lazy[si] = -pinf;
+            st[si] = gcd(st[si], dx);
             if (ss != se)
             {
-                lazy[2 * si] = gcd(dx, lazy[2 * si]);
-                lazy[2 * si + 1] = gcd(dx, lazy[2 * si + 1]);
+                lazy[2 * si] = dx;
+                lazy[2 * si + 1] = dx;
             }
         }
         if (ss > qe || se < qs)
@@ -406,8 +431,8 @@ private:
             st[si] = gcd(st[si], val);
             if (ss != se)
             {
-                lazy[2 * si] = gcd(st[2 * si], val);
-                lazy[2 * si + 1] = gcd(st[2 * si + 1], val);
+                lazy[2 * si] = val;
+                lazy[2 * si + 1] = val;
             }
             return;
         }
